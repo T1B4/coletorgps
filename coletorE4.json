@@ -1,0 +1,10 @@
+{
+    "script": "/var/sites/coletorgps/html/e4.php",
+    "watch": true,
+    "ignore_watch": ["Logs"],
+    "interpreter": "/opt/phps/7.0.5/bin/php",
+    "watch_options": {
+        "followSymlinks": false,
+    },
+    "name": "ColetorE4",
+}

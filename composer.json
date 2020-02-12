@@ -1,0 +1,24 @@
+{
+    "name": "hospedaria-internet/coletorgps",
+    "description": "Coletor de Dados GPS",
+    "authors": [
+        {
+            "name": "Fernando César Tiburcio",
+            "email": "fernando.tiburcio@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "monolog/monolog": "^1.24",
+        "kittinan/php-crc": "^1.0",
+      "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Src\\": "src/",
+            "App\\": "App/",
+            "Config\\": "App/Config/",
+            "DB\\": "App/DB/"
+        }
+    }
+}
