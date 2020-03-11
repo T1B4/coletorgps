@@ -72,7 +72,7 @@ class Magneti_Marelli_Sockets
                 $device  = $tracker->localizarTracker(strtoupper($trackerId));
 
                 // VERIFICA SE EXISTE UMA TABELA PARA O TRACKER NO BANCO DE DADOS
-                if ($device !== false) {
+                if ($device && $device != false) {
 
                     try {
                         file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - Tabela {$trackerId} encontrada, continuando com o processamento dos dados...\n", FILE_APPEND);

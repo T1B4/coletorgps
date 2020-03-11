@@ -492,21 +492,17 @@ class OrbisatDataTranslate
         $odom  = 0;
         $horim = 0;
 
-        // Checa se a string recebida continha o registro de odometro para inserirr no banco de dados
+        // Checa se a string recebida continha o registro de odometro para inserir no banco de dados
         if ($this->getOdom()) {
             $odomRecebido = $this->getOdom();
             $odomFinal    = round($odomRecebido) - $tracker_data['odometro'];
-            // echo "\n\n Hodometro anterior : " . $tracker_data['odometro'] . "\n\n";
-            // echo "\n\n Hodometro : " . round($odomRecebido) . "\n\n";
-            // echo "\n\n Diferença Hodometro : " . $odomFinal . "\n\n";
             $odom = $this->getOdom();
         }
+
+        // Checa se a string recebida continha o registro de horimetro para inserir no banco de dados
         if ($this->getHorom()) {
             $horimRecebido = $this->getHorom();
             $horimFinal    = round($horimRecebido) - $tracker_data['horimetro'];
-            // echo "\n\n Horimetro anterior : " . $tracker_data['horimetro'] . "\n\n";
-            // echo "\n\n Horimetro : " . round($horimRecebido) . "\n\n";
-            // echo "\n\n Diferença Horimetro : " . $horimFinal . "\n\n";
             $horim = $this->getHorom();
         }
 
@@ -520,7 +516,7 @@ class OrbisatDataTranslate
 
         try {
             // Realiza uma checagem minima de satelites e distorção nos parametros odometro e horimetro para então poder gravar os dados no banco de dados
-            if ($nsats >= 1 && $now > $timestamp) {
+            if ($nsats >= 3 && $now > $timestamp) {
                 // if ($nsats >= 1) {
                 // Persiste os dados recebidos no arquivo de log do rastreador
                 try {
@@ -534,9 +530,9 @@ class OrbisatDataTranslate
                 $this->getTrackers()->insertCoordinates($timestamp, $trackerId, $lat, $lon, $vel, $nsats, $ign, $pan, $ip, $odom, $horim, $this->getData());
             }
             // Checa se o numero minimo de satelites está dentro do especificado, se não, grava no arquivo de log essa informação e não grava os dados no banco de dados
-            if ($nsats < 1) {
+            if ($nsats < 3) {
                 try {
-                    file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - string recebida mas com sinal de satélites = 0, não registrando dados no banco de dados.\n", FILE_APPEND);
+                    file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - string recebida mas com sinal de satélites insuficiente, não registrando dados no banco de dados.\n", FILE_APPEND);
                 } catch (Exception $e) {
                     echo "\n\n Não foi possível gravar o arquivo" . $e->getMessage() . "\n\n";
                 }
@@ -584,7 +580,7 @@ class OrbisatDataTranslate
         $now = time();
 
         try {
-            if ($nsats >= 1 && $now > $timestamp) {
+            if ($nsats >= 3 && $now > $timestamp) {
                 try {
                     file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - Coordenadas válidas recebidas, Latitude: $lat, Longitude: $lon, Velocidade: $vel, NSats: $nsats, Ignição: $ign, Pânico: $pan, Odometro: $odom e Horimetro: $horim.\n", FILE_APPEND);
                     file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - Dados armazenados no banco de dados com sucesso.\n", FILE_APPEND);
@@ -593,7 +589,7 @@ class OrbisatDataTranslate
                 }
                 $this->getTrackers()->insertCoordinates($timestamp, $trackerId, $lat, $lon, $vel, $nsats, $ign, $pan, $ip, $odom, $horim, $this->getData());
             }
-            if ($nsats < 1) {
+            if ($nsats < 3) {
 
                 try {
                     file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - string recebida mas com sinal de satélites = 0, não registrando dados no banco de dados.\n", FILE_APPEND);
@@ -660,7 +656,7 @@ class OrbisatDataTranslate
                 $now = time();
 
                 try {
-                    if ($nsats >= 1 && $now > $timestamp) {
+                    if ($nsats >= 3 && $now > $timestamp) {
                         try {
                             file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - Coordenadas válidas recebidas, Latitude: $lat, Longitude: $lon, Velocidade: $vel, NSats: $nsats, Ignição: $ign, Pânico: $pan, Odometro: $odom e Horimetro: $horim.\n", FILE_APPEND);
                             file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - Dados armazenados no banco de dados com sucesso.\n", FILE_APPEND);
@@ -671,7 +667,7 @@ class OrbisatDataTranslate
                         $string = $value;
                     }
 
-                    if ($nsats < 1) {
+                    if ($nsats < 3) {
 
                         try {
                             file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - string recebida mas com sinal de satélites = 0, não registrando dados no banco de dados.\n", FILE_APPEND);
@@ -736,7 +732,7 @@ class OrbisatDataTranslate
         $now = time();
 
         try {
-            if ($nsats >= 1 && $now > $timestamp) {
+            if ($nsats >= 3 && $now > $timestamp) {
                 try {
                     file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - Coordenadas válidas recebidas, Latitude: $lat, Longitude: $lon, Velocidade: $vel, NSats: $nsats, Ignição: $ign, Pânico: $pan, Odometro: $odom e Horimetro: $horim.\n", FILE_APPEND);
                     file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - Dados armazenados no banco de dados com sucesso.\n", FILE_APPEND);
@@ -745,7 +741,7 @@ class OrbisatDataTranslate
                 }
                 $this->getTrackers()->insertCoordinates($timestamp, $trackerId, $lat, $lon, $alt, $vel, $nsats, $ign, $pan, $ip, $odom, $horim, $this->getData());
             }
-            if ($nsats < 1) {
+            if ($nsats < 3) {
 
                 try {
                     file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - string recebida mas com sinal de satélites = 0, não registrando dados no banco de dados.\n", FILE_APPEND);

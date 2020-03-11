@@ -344,7 +344,7 @@ class E3DataTranslate
 
             $this->getTrackers()->insertCoordinates($timestamp, strtoupper($trackerId), $lat, $lon, $vel, $signal, $ign, $pan, $ip, $odom, $horim, $string);
         }
-        if ($signal < 1 || $gps != 'A') {
+        if ($signal < 8 || $gps != 'A') {
             try {
                 file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - string recebida mas com sinal de satélites = 0, não registrando dados no banco de dados.\n", FILE_APPEND);
             } catch (Exception $e) {
@@ -401,7 +401,7 @@ class E3DataTranslate
                     $this->getTrackers()->insertCoordinates($timestamp, strtoupper($trackerId), $lat, $lon, $vel, $nsats, $ign, $pan, $ip, $odom, $horim, $string);
 
                 }
-                if ($nsats < 1 || $gps != 'A') {
+                if ($nsats < 8 || $gps != 'A') {
                     try {
                         file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - string recebida mas com sinal de satélites = 0, não registrando dados no banco de dados.\n", FILE_APPEND);
                     } catch (Exception $e) {

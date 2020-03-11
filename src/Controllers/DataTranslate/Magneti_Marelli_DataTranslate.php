@@ -407,7 +407,7 @@ class Magneti_Marelli_DataTranslate
         $now = time();
 
         try {
-            if ($nsats > 0 && $now > $timestamp) {
+            if ($nsats > 3 && $now > $timestamp) {
                 try {
                     file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - Coordenadas válidas recebidas, Latitude: $lat, Longitude: $lon, Velocidade: $vel, NSats: $nsats, Ignição: $ign, Pânico: $pan, Odometro: $odom e Horimetro: $horim.\n", FILE_APPEND);
                     file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - Dados armazenados no banco de dados com sucesso.\n", FILE_APPEND);
@@ -416,7 +416,7 @@ class Magneti_Marelli_DataTranslate
                 }
                 $this->getTrackers()->insertCoordinates($timestamp, $trackerId, $lat, $lon, $vel, $nsats, $ign, $pan, $ip, $odom, $horim, $string);
             }
-            if ($nsats < 1) {
+            if ($nsats < 3) {
                 try {
                     file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - string recebida mas com sinal de satélites = 0, não registrando dados no banco de dados.\n", FILE_APPEND);
                 } catch (Exception $e) {

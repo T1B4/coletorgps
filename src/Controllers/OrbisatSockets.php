@@ -58,9 +58,9 @@ class OrbisatSockets
                 if (!empty($data)) {
                     $data = bin2hex($data);
                     var_dump($data);
-                    $msgid     = substr($data, 2, 2);
+                    $msgid = substr($data, 2, 2);
                     $trackerId = strtoupper(substr($data, 6, 10));
-                    $cmdType   = '';
+                    $cmdType = '';
 
                     $file = "/var/sites/coletorgps/html/Logs/" . $trackerId;
 
@@ -74,13 +74,13 @@ class OrbisatSockets
                         }
                     }
 
-                    // VERIFICA SE EXISTE UMA TABELA PARA O TRACKER NO BANCO DE DADOS
                     $tracker = new Trackers($this->logger);
-                    $device  = $tracker->localizarTracker($trackerId);
+                    // VERIFICA SE EXISTE UMA TABELA PARA O TRACKER NO BANCO DE DADOS E SE O TRACKER É UM TRACKER VÁLIDO
+                    $device = $tracker->localizarTracker($trackerId);
 
-                    // INICIA O PROCESSAMENTO DOS DADOS RECEBIDOS PELO COLETOR
-                    if ($device) {
+                    if ($device && $device != false) {
 
+                        // INICIA O PROCESSAMENTO DOS DADOS RECEBIDOS PELO COLETOR
                         try {
                             file_put_contents($file, date("d/m/Y H:i:s", strtotime('-3 hours')) . " - Tabela {$trackerId} encontrada, continuando com o processamento dos dados...\n", FILE_APPEND);
                         } catch (Exception $e) {
@@ -94,11 +94,11 @@ class OrbisatSockets
                         global $orbisatCommandsLabel;
                         global $osTrackerKey;
 
-                        $seq    = $this->translateData(substr($data, 4, 2));
+                        $seq = $this->translateData(substr($data, 4, 2));
                         $finsyn = substr($seq, 0, 2);
-                        $rx     = substr($seq, 2, 3);
-                        $tx     = substr($seq, 5, 3);
-                        $seq    = $this->unTranslateData($finsyn . $tx . $rx);
+                        $rx = substr($seq, 2, 3);
+                        $tx = substr($seq, 5, 3);
+                        $seq = $this->unTranslateData($finsyn . $tx . $rx);
 
                         if ($tx === '111') {
                             $seq = base_convert('01110000', 2, 16);
@@ -106,11 +106,11 @@ class OrbisatSockets
                         $buffer = '06' . $seq . $trackerId . '0b00';
 
                         $crcGen = new crc16_Kermit();
-                        $crc    = $crcGen->ComputeCrc($buffer);
-                        $crc    = substr($crc, 2, 2) . substr($crc, 0, 2);
+                        $crc = $crcGen->ComputeCrc($buffer);
+                        $crc = substr($crc, 2, 2) . substr($crc, 0, 2);
 
                         $message = '02' . $buffer . $crc . '0d';
-                        $len     = strlen($message);
+                        $len = strlen($message);
 
                         // ENVIA A MENSAGEM DE ACK PARA O TRACKER
                         if ($msgid !== '06' && $msgid !== '15') {
@@ -204,10 +204,10 @@ class OrbisatSockets
     private function processStatus($data)
     {
         $status_string = substr($data, 58, 2);
-        $status        = str_pad(base_convert($status_string, 16, 2), 8, 0, STR_PAD_LEFT);
-        $status        = array_reverse(str_split($status, 1));
-        $mensagem      = '';
-        $trackerId     = substr($data, 6, 10);
+        $status = str_pad(base_convert($status_string, 16, 2), 8, 0, STR_PAD_LEFT);
+        $status = array_reverse(str_split($status, 1));
+        $mensagem = '';
+        $trackerId = substr($data, 6, 10);
 
         if ($status[0] === "0") {
             $mensagem .= "GPS desligado ";
@@ -247,25 +247,25 @@ class OrbisatSockets
 
         $dt = new OrbisatDataTranslate($this->logger);
         $dt->setBinMap();
-        $tmst  = $dt->setTimestamp($data, 18, 8);
-        $lat   = $dt->setLat($data, 26, 8);
-        $lon   = $dt->setLong($data, 34, 8);
+        $tmst = $dt->setTimestamp($data, 18, 8);
+        $lat = $dt->setLat($data, 26, 8);
+        $lon = $dt->setLong($data, 34, 8);
         $speed = $dt->setVel($data, 46, 4);
 
-        $tmst  = $dt->DataToDate();
-        $lat   = $dt->getLat();
-        $lon   = $dt->getLong();
+        $tmst = $dt->DataToDate();
+        $lat = $dt->getLat();
+        $lon = $dt->getLong();
         $speed = $dt->getVel();
 
         if (!isset($_SESSION['mensagem'][$trackerId]) || empty($_SESSION['mensagem'][$trackerId])) {
             $_SESSION['mensagem'][$trackerId] = $mensagem;
-            $msg                              = new Alertas($this->logger);
+            $msg = new Alertas($this->logger);
             $msg->saveAlert($mensagem, $trackerId, $tmst, $lat, $lon, $speed);
         }
 
         if (strcasecmp($_SESSION['mensagem'][$trackerId], $mensagem) < 0) {
             $_SESSION['mensagem'][$trackerId] = $mensagem;
-            $msg                              = new Alertas($this->logger);
+            $msg = new Alertas($this->logger);
             $msg->saveAlert($mensagem, $trackerId, $tmst, $lat, $lon, $speed);
         }
 
@@ -295,8 +295,8 @@ class OrbisatSockets
 
     public function unTranslateData($data)
     {
-        $binmap   = $this->setBinMap();
-        $string   = str_split($data, 4);
+        $binmap = $this->setBinMap();
+        $string = str_split($data, 4);
         $hexvalue = '';
 
         foreach ($string as $key => $value) {
